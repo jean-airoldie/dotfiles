@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd dotfiles/
+
+# Change ownership of files to current user
+chown -R $(logname) .
+
+# Create all directories
+DIRS=$(find . -type d)
+for DIR in $DIRS; do
+    mkdir -p ~/$DIR
+done
+
+# Copy all files to directories
+FILES=$(find . -type f)
+for FILE in $FILES; do
+    cp {,~/}$FILE
+done
+
+cd ..

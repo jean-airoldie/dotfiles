@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd dotfiles/
+
+FILES=$(find . -type f)
+for FILE in $FILES; do
+    cp {~/,}$FILE
+done
+
+cd ..
