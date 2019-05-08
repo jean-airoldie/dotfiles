@@ -189,6 +189,9 @@ Plug 'kaicataldo/material.vim'
 " TOML language support
 Plug 'cespare/vim-toml'
 
+" RON syntax highlighting
+Plug 'ron-rs/ron.vim'
+
 " Initialize plugin system
 call plug#end()
 
