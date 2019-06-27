@@ -17,6 +17,7 @@ end
 
 # Various ENV variables
 export FLATC_BUILD_ENABLED=1
+export DOCKER_BUILDKIT=1
 
 # ENV variables used by gdb for rust debugging
 source ~/.cargo/env
