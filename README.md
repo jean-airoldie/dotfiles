@@ -6,4 +6,4 @@
 # This will copy all the config files from the dotfiles directory/
 # and copy them to the same location under ~. Please note that this
 # will overwrite any config files already present at those locations.
-$ ./expert_to_user_space
+$ ./export_to_user_space
