@@ -177,6 +177,7 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " Better status line
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " NerdTree
 Plug 'scrooloose/nerdtree'
@@ -204,7 +205,7 @@ let g:airline#extensions#tabline#enabled = 1
 
 " Theme config
 set background=dark
-let g:material_theme_style = 'darker'
+let g:material_theme_style = 'dark'
 colorscheme material
 if (has("termguicolors"))
   set termguicolors
