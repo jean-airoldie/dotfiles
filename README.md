@@ -7,3 +7,5 @@
 # and copy them to the same location under ~. Please note that this
 # will overwrite any config files already present at those locations.
 $ ./export_to_user_space
+# This will install the nvim plugins used in my config
+$ nvim +PlugInstall +UpdateRemotePlugins +qa
