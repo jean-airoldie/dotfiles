@@ -204,7 +204,7 @@ let g:airline#extensions#tabline#enabled = 1
 
 " Theme config
 set background=dark
-let g:material_theme_style = 'dark'
+let g:material_theme_style = 'darker'
 colorscheme material
 if (has("termguicolors"))
   set termguicolors
