@@ -186,7 +186,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'KeitaNakamura/neodark.vim'
 
 "" Better syntax highlighting
-"Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot'
 
 " Initialize plugin system
 call plug#end()
@@ -230,6 +230,8 @@ nnoremap <C-e> :NERDTreeToggle<CR>
 set hidden
 " Remove autocomplete preview.
 set completeopt-=preview
+" Disable the very noisy error messages.
+let g:LanguageClient_useVirtualText = 0
 
 let g:LanguageClient_serverCommands = {
     \ 'rust': ['rls'],
