@@ -211,17 +211,13 @@ colorscheme neodark
 " Override search highlighting
 highlight Search cterm=NONE ctermfg=None ctermbg=black
 highlight IncSearch cterm=NONE ctermfg=None ctermbg=black
-highlight OnText cterm=NONE ctermfg=None ctermbg=yellow
-" Flash on first match
+highlight OnText cterm=inverse ctermfg=None
+" Inverse color of currently selected text.
 function! HLNext (blinktime)
     let [bufnum, lnum, col, off] = getpos('.')
     let matchlen = strlen(matchstr(strpart(getline('.'),col-1),@/))
     let target_pat = '\c\%#\%('.@/.'\)'
     let ring = matchadd('OnText', target_pat, 101)
-    redraw
-    exec 'sleep ' . float2nr(a:blinktime * 100) . 'm'
-    call matchdelete(ring)
-    redraw
 endfunction
 
 
