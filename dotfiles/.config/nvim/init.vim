@@ -210,6 +210,7 @@ colorscheme neodark
 
 " Override search highlighting
 highlight Search cterm=NONE ctermfg=None ctermbg=black
+highlight IncSearch cterm=NONE ctermfg=None ctermbg=black
 highlight OnText cterm=NONE ctermfg=None ctermbg=yellow
 " Flash on first match
 function! HLNext (blinktime)
