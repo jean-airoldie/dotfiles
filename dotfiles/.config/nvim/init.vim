@@ -231,10 +231,10 @@ set hidden
 " Remove autocomplete preview.
 set completeopt-=preview
 " Disable the very noisy error messages.
-let g:LanguageClient_useVirtualText = 0
+let g:LanguageClient_useVirtualText = "No"
 
 let g:LanguageClient_serverCommands = {
-    \ 'rust': ['rls'],
+    \ 'rust': ['rust-analyzer'],
     \ }
 
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
