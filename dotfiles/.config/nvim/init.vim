@@ -166,9 +166,6 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-" NerdTree
-Plug 'scrooloose/nerdtree'
-
 " Theme
 Plug 'KeitaNakamura/neodark.vim'
 
@@ -220,10 +217,6 @@ function! HLNext (blinktime)
     let ring = matchadd('OnText', target_pat, 101)
 endfunction
 
-
-" NerdTree plugin
-nnoremap <C-e> :NERDTreeToggle<CR>
-
 " ==[ Language Client config ]==
 
 " Required for operations modifying multiple buffers like rename.
@@ -233,8 +226,12 @@ set completeopt-=preview
 " Disable the very noisy error messages.
 let g:LanguageClient_useVirtualText = "No"
 
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['rust-analyzer'],
-    \ }
+set signcolumn=yes
 
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+let g:LanguageClient_serverCommands = {
+\ 'rust': ['rust-analyzer'],
+\ }
+
+nnoremap , :call LanguageClient_contextMenu()<CR>
+nnoremap <a-k> <pageup>
+nnoremap <a-j> <pagedown>

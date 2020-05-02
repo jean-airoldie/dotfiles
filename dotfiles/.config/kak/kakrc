@@ -1,14 +1,26 @@
 ## Create a new user mode for clipboard specific tasks.
 declare-user-mode clipboard
-map global normal <+> ':enter-user-mode<space>clipboard<ret>'
+map global normal + ':enter-user-mode clipboard<ret>'
 
-map global clipboard P '! xsel --output --clipboard<ret>' \
+map global clipboard P '! cat /tmp/clipboard<ret>' \
     -docstring "paste the content of the clipboard before the main cursor"
-map global clipboard p '<a-!> xsel --output --clipboard<ret>' \
-    -docstring "paste the content of the clipboard before the main cursor"
+map global clipboard p '<a-!> cat /tmp/clipboard<ret>' \
+    -docstring "paste the content of the clipboard after the main cursor"
+
+## Always yank to clipboard
+hook global NormalKey y|d|c %{ nop %sh{
+  printf %s "$kak_main_reg_dquote" > /tmp/clipboard
+}}
+
+## The we use ":" more than ";" so lets invert them.
+map global normal <semicolon> ':'
+map global normal ':' <semicolon>
 
 ## Add relative line numbering.
-add-highlighter global/ number-lines -relative
+add-highlighter global/ number-lines -relative -hlcursor
+
+## Add matching character highlighter.
+add-highlighter global/ show-matching
 
 ## Tell kak where to autoload the plugin manager.
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
@@ -27,9 +39,9 @@ hook global WinSetOption filetype=(rust|c|cpp) %{
 
     # Remap some of the lsp space commands.
     map global lsp r '<esc>: lsp-rename-prompt<ret>' \
-    	-docstring 'rename symbol under main cursor'
+        -docstring 'rename symbol under main cursor'
     map global lsp R '<esc>: lsp-references<ret>' \
-    	-docstring 'list symbol references'
+        -docstring 'list symbol references'
 
     # Add a key to enter the language server namespace. We overwrite the key <,>
     # used by the empty default user mode.
@@ -41,21 +53,11 @@ plug "andreyorst/smarttab.kak" defer smarttab %{
     # when `backspace' is pressed, 4 spaces are deleted at once
     set-option global softtabstop 4
 } config %{
-    hook global WinSetOption filetype=(rust|markdown|kak|sh|c|c++) expandtab
+    hook global WinSetOption filetype=.* expandtab
 }
 
 ## Add fzf as our fuzzy search.
 plug "andreyorst/fzf.kak"
-
-## Add the equivalent of VIM's visual block mode.
-plug "occivink/kakoune-vertical-selection"
-
-# Overwrite the default view commands since they are basically
-# useless.
-unmap global normal v
-unmap global normal V
-map global normal v ': vertical-selection-down<ret>'
-map global normal V ': vertical-selection-up<ret>'
 
 ## Add some themes.
 plug "andreyorst/base16-gruvbox.kak" noload do %{

@@ -127,3 +127,6 @@ set m 0 0
 export RUSTC_SYSROOT=$(rustc --print sysroot)
 export RUST_SRC_PATH=$RUSTC_SYSROOT/lib/rustlib/src/rust/src/
 export RUST_GDB_PYTHON_MODULE_PATH=$RUSTC_SYSROOT/lib/rustlib/etc/
+
+# Snap
+export PATH="/snap/bin:$PATH"
