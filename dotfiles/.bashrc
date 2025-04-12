@@ -116,17 +116,16 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# pipe to X11 clipboard
-alias xc='xclip -selection clipboard'
 # trash is safer than rm
 alias rm='trash'
 # disable mouse acceleration
 set m 0 0
+
+# Snap
+source "$HOME/.cargo/env"
 
 # Rust
 export RUSTC_SYSROOT=$(rustc --print sysroot)
 export RUST_SRC_PATH=$RUSTC_SYSROOT/lib/rustlib/src/rust/src/
 export RUST_GDB_PYTHON_MODULE_PATH=$RUSTC_SYSROOT/lib/rustlib/etc/
 
-# Snap
-export PATH="/snap/bin:$PATH"

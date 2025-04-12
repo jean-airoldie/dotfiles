@@ -8,6 +8,9 @@ set undofile           " keep an undo file (undo changes after closing)
 set ruler              " show the cursor position all the time
 set showcmd            " display incomplete commands
 
+" Use to view syntax group while testing custom syntax highlighting
+nnoremap <F9> <cmd>echo synIDattr(synID(line('.'), col('.'), 1), 'name')<CR>
+
 " Don't use Ex mode, use Q for formatting
 noremap Q gq
 
@@ -149,28 +152,28 @@ endif
 " Specify a directory for plugins
 call plug#begin('~/.local/share/nvim/plugged')
 
-" Language Client support
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
-
 " Multi-entry selection UI.
 " https://github.com/junegunn/fzf
 Plug 'junegunn/fzf'
 
-" Async completion
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
 " Better status line
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+
+" NerdTree
+Plug 'scrooloose/nerdtree'
 
 " Theme
 Plug 'KeitaNakamura/neodark.vim'
 
 "" Better syntax highlighting
 Plug 'sheerun/vim-polyglot'
+
+" Brandon syntax highlighting
+Plug '~/project/vim-brandon'
+
+" Neovim language server protocol support
+Plug 'neovim/nvim-lspconfig'
 
 " Initialize plugin system
 call plug#end()
@@ -182,28 +185,30 @@ let g:deoplete#enable_at_startup = 1
 let g:airline_theme = 'minimalist'
 let g:airline#extensions#tabline#enabled = 1
 
-"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
-"If you're using tmux version 2.2 or later, you can remove the outermost
-"$TMUX check and use tmux's 24-bit color support
-"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
-if (empty($TMUX))
-    if (has("nvim"))
-        "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-        let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-    endif
-      "For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
-      "https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-      "Based on Vim patch 7.4.1770 (`guicolors` option) <
-      "https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-      " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
-    if (has("termguicolors"))
-        set termguicolors
-    endif
-endif
+""Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+""If you're using tmux version 2.2 or later, you can remove the outermost
+""$TMUX check and use tmux's 24-bit color support
+""(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
+"if (empty($TMUX))
+"    if (has("nvim"))
+"        "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+"        let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+"    endif
+"      "For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
+"      "https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+"      "Based on Vim patch 7.4.1770 (`guicolors` option) <
+"      "https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+"      " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+"    if (has("termguicolors"))
+"        set termguicolors
+"    endif
+"endif
 
 " Theme config
 let g:neodark#terminal_transparent = 1
+let g:neodark#use_256color = 1
 colorscheme neodark
+highlight Normal guibg=NONE
 
 " Override search highlighting
 highlight Search cterm=NONE ctermfg=None ctermbg=black
@@ -217,21 +222,46 @@ function! HLNext (blinktime)
     let ring = matchadd('OnText', target_pat, 101)
 endfunction
 
+
+" NerdTree plugin
+nnoremap <C-e> :NERDTreeToggle<CR>
+
 " ==[ Language Client config ]==
 
-" Required for operations modifying multiple buffers like rename.
-set hidden
-" Remove autocomplete preview.
-set completeopt-=preview
-" Disable the very noisy error messages.
-let g:LanguageClient_useVirtualText = "No"
+" setup the language server.
+lua << EOF
+local lspconfig = require('lspconfig')
 
-set signcolumn=yes
+function lsp_keymap(bufnr)
+  local bufopts = { noremap=true, silent=true, buffer=bufnr }
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+  vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
+  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+end
 
-let g:LanguageClient_serverCommands = {
-\ 'rust': ['rust-analyzer'],
-\ }
+lspconfig.rust_analyzer.setup {
+  -- Server-specific settings. See `:help lspconfig-setup`
+  settings = {
+    ['rust-analyzer'] = {},
+  },
+  on_attach = function(client)
+    -- Disable server side syntax highlight.
+    client.server_capabilities.semanticTokensProvider = nil
+    -- Use custom keymap
+    lsp_keymap(bufnr)
+  end,
+}
+EOF
 
-nnoremap , :call LanguageClient_contextMenu()<CR>
-nnoremap <a-k> <pageup>
-nnoremap <a-j> <pagedown>
+" Display error signs from LSP in number column
+set signcolumn=number
+
+nnoremap <C-e> :NERDTreeToggle<CR>

@@ -27,6 +27,6 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 
 # Add cargo to PATH
-export PATH="$HOME/.cargo/bin:$PATH"
 # Add go binaries to PATH
 export PATH="$HOME/go/bin:$PATH"
+. "$HOME/.cargo/env"

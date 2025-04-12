@@ -13,3 +13,5 @@
 
 [submodule]
     recurse = true
+[pull]
+	rebase = true
