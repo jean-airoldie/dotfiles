@@ -156,6 +156,9 @@ call plug#begin('~/.local/share/nvim/plugged')
 " https://github.com/junegunn/fzf
 Plug 'junegunn/fzf'
 
+" Async completion
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
 " Better status line
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -171,9 +174,6 @@ Plug 'sheerun/vim-polyglot'
 
 " Brandon syntax highlighting
 Plug '~/project/vim-brandon'
-
-" Neovim language server protocol support
-Plug 'neovim/nvim-lspconfig'
 
 " Initialize plugin system
 call plug#end()
@@ -225,41 +225,6 @@ endfunction
 
 " NerdTree plugin
 nnoremap <C-e> :NERDTreeToggle<CR>
-
-" ==[ Language Client config ]==
-
-" setup the language server.
-lua << EOF
-local lspconfig = require('lspconfig')
-
-function lsp_keymap(bufnr)
-  local bufopts = { noremap=true, silent=true, buffer=bufnr }
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-  vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-  vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
-  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-end
-
-lspconfig.rust_analyzer.setup {
-  -- Server-specific settings. See `:help lspconfig-setup`
-  settings = {
-    ['rust-analyzer'] = {},
-  },
-  on_attach = function(client)
-    -- Disable server side syntax highlight.
-    client.server_capabilities.semanticTokensProvider = nil
-    -- Use custom keymap
-    lsp_keymap(bufnr)
-  end,
-}
-EOF
 
 " Display error signs from LSP in number column
 set signcolumn=number
